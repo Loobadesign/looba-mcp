@@ -1,0 +1,2 @@
+recursive-include looba_mcp/server *.js *.json
+recursive-exclude looba_mcp/server/node_modules *

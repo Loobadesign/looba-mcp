@@ -26,4 +26,4 @@ looba-mcp = "looba_mcp.__main__:main"
 include = ["looba_mcp*"]
 
 [tool.setuptools.package-data]
-"looba_mcp" = ["server/**/*"]
+"looba_mcp" = ["server/*.js", "server/*.json"]
