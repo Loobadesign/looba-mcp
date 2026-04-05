@@ -4,6 +4,18 @@ An [MCP](https://modelcontextprotocol.io) server that gives AI assistants read-o
 
 No API key required. No database credentials. The server calls the public Looba API over HTTPS.
 
+## Install
+
+```bash
+npm install -g looba-mcp
+```
+
+Or run directly with npx (no install needed):
+
+```bash
+npx looba-mcp
+```
+
 ## Tools
 
 | Tool | Description |
@@ -17,7 +29,7 @@ No API key required. No database credentials. The server calls the public Looba 
 
 ### Claude Code
 
-Add to your Claude Code settings (`~/.claude/settings.json` or project `.mcp.json`):
+Add to your project `.mcp.json` or `~/.claude/settings.json`:
 
 ```json
 {
@@ -30,14 +42,23 @@ Add to your Claude Code settings (`~/.claude/settings.json` or project `.mcp.jso
 }
 ```
 
-Or clone and run locally:
+### Cursor
+
+Go to **Settings > MCP Servers > Add Server**:
+
+- Name: `looba`
+- Command: `npx -y looba-mcp`
+
+### Windsurf
+
+Add to `~/.windsurf/mcp.json`:
 
 ```json
 {
   "mcpServers": {
     "looba": {
-      "command": "node",
-      "args": ["/path/to/looba-mcp/index.js"]
+      "command": "npx",
+      "args": ["-y", "looba-mcp"]
     }
   }
 }

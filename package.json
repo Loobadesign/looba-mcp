@@ -5,6 +5,9 @@
   "type": "module",
   "description": "MCP server for browsing Looba UI snippets — search posts, read code, and discover authors.",
   "main": "index.js",
+  "bin": {
+    "looba-mcp": "index.js"
+  },
   "scripts": {
     "start": "node index.js"
   },
