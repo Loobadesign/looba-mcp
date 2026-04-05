@@ -207,6 +207,137 @@ server.tool(
   }
 );
 
+// ---- Tool: integrate_post ----
+
+server.tool(
+  "integrate_post",
+  "Fetch a Looba snippet and return it with detailed integration instructions " +
+    "tailored to the user's project. The AI assistant MUST use the project_context " +
+    "to adapt class names, CSS variables, imports, and structure to match the target codebase. " +
+    "Use this instead of get_post when the user wants to add a snippet to their project.",
+  {
+    slug: z.string().describe("The post slug (from the URL /post=<slug>)"),
+    project_context: z
+      .string()
+      .describe(
+        "Description of the target project: framework (React/Vue/Svelte/vanilla/Next.js...), " +
+          "CSS approach (CSS modules, Tailwind, styled-components, SCSS, global CSS...), " +
+          "naming conventions (BEM, camelCase...), existing CSS variables or design tokens, " +
+          "component patterns, and the target file path where the snippet will be placed."
+      ),
+    target_file: z
+      .string()
+      .optional()
+      .describe("The file path where the snippet will be integrated (helps with import paths)"),
+  },
+  async ({ slug, project_context, target_file }) => {
+    const sanitizedSlug = String(slug || "").trim();
+    if (!sanitizedSlug) {
+      return { content: [{ type: "text", text: "Error: slug is required." }] };
+    }
+
+    const data = await api("/api/snippets/one", { slug: sanitizedSlug });
+    const post = data.post;
+    const author = data.author;
+
+    if (!post) {
+      return { content: [{ type: "text", text: `No post found with slug "${sanitizedSlug}".` }] };
+    }
+
+    const snippetType = post.snippet_type || "classic";
+    const sections = [attributionBlock(post, author), ""];
+
+    sections.push(`# ${post.title}`, "");
+    if (post.description) sections.push(post.description, "");
+
+    sections.push(
+      `Type: ${snippetType}`,
+      `Tags: ${(post.tags || []).join(", ") || "none"}`,
+      `License: ${post.license_name || "MIT License"}`,
+      ""
+    );
+
+    // Raw code section
+    sections.push("# Original code", "");
+
+    if (snippetType === "classic") {
+      const html = post.html || "";
+      const css = post.css || "";
+      const js = post.js || "";
+      if (html) sections.push("## HTML", "```html", html, "```", "");
+      if (css) sections.push("## CSS", "```css", css, "```", "");
+      if (js) sections.push("## JavaScript", "```javascript", js, "```", "");
+    } else if (snippetType === "react") {
+      const jsx = post.snippet_jsx || "";
+      const styles = post.styles_css || "";
+      const html = post.html || "";
+      if (jsx) sections.push("## JSX", "```jsx", jsx, "```", "");
+      if (styles) sections.push("## Styles (CSS)", "```css", styles, "```", "");
+      if (html) sections.push("## HTML (host)", "```html", html, "```", "");
+    } else if (snippetType === "tailwind") {
+      const html = post.html || "";
+      const css = post.css || "";
+      const js = post.js || "";
+      if (html) sections.push("## HTML (Tailwind)", "```html", html, "```", "");
+      if (css) sections.push("## CSS", "```css", css, "```", "");
+      if (js) sections.push("## JavaScript", "```javascript", js, "```", "");
+    }
+
+    // Integration instructions
+    sections.push(
+      "# Integration instructions",
+      "",
+      "You MUST adapt the code above to the user's project before inserting it.",
+      "Do NOT copy-paste the raw snippet. Follow these rules strictly:",
+      "",
+      "## Project context provided by the user:",
+      "```",
+      project_context,
+      "```",
+      ""
+    );
+
+    if (target_file) {
+      sections.push(`## Target file: \`${target_file}\``, "");
+    }
+
+    sections.push(
+      "## Adaptation checklist:",
+      "",
+      "1. **CSS class names**: Rename all classes to match the project's naming convention " +
+        "(BEM, camelCase, kebab-case, CSS modules, etc.). Prefix with a component-specific " +
+        "namespace if the project uses one.",
+      "",
+      "2. **CSS variables**: Replace hardcoded colors, fonts, spacing, border-radius, and " +
+        "shadows with the project's existing CSS custom properties or design tokens. " +
+        "If the project uses Tailwind, convert CSS to Tailwind utility classes.",
+      "",
+      "3. **Units and scale**: Adapt px values to match the project's unit system " +
+        "(rem, em, Tailwind spacing scale, etc.).",
+      "",
+      "4. **Component structure**: Convert the HTML/CSS to the project's component format " +
+        "(React JSX, Vue SFC, Svelte, Web Components, etc.). Use the project's patterns " +
+        "for state management, event handling, and props.",
+      "",
+      "5. **Imports and dependencies**: Add necessary imports. If the snippet uses " +
+        "animations or libraries not in the project, suggest alternatives or provide " +
+        "the minimal CSS keyframes needed.",
+      "",
+      "6. **Responsiveness**: Preserve the snippet's responsive behavior but adapt " +
+        "breakpoints to match the project's breakpoint system.",
+      "",
+      "7. **Accessibility**: Preserve ARIA attributes. Add them if missing.",
+      "",
+      "8. **No style leaks**: Scope all CSS to the component. Never use global selectors " +
+        "like `*`, `body`, `html`, or bare element selectors that could conflict.",
+      "",
+      attributionBlock(post, author)
+    );
+
+    return { content: [{ type: "text", text: sections.join("\n") }] };
+  }
+);
+
 // ---- Tool: search_by_author ----
 
 server.tool(

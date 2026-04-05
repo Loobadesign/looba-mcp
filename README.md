@@ -39,9 +39,33 @@ npm install
 | Tool | Description |
 |------|-------------|
 | `list_posts` | Search and browse snippet posts with filters (tag, type, sort) |
-| `get_post` | Get full HTML/CSS/JS/JSX/TSX code of a post with author attribution |
+| `get_post` | Get full HTML/CSS/JS code of a post with author attribution |
+| `integrate_post` | Fetch a snippet with integration instructions adapted to your project's CSS, framework, and conventions |
 | `search_by_author` | List all posts by a specific author |
 | `get_popular_tags` | Discover trending tags across the platform |
+
+### integrate_post
+
+The `integrate_post` tool is designed for when you want to **add a Looba snippet directly into your codebase**. It fetches the full code and returns it with a detailed adaptation checklist so the AI assistant can:
+
+- Rename CSS classes to match your naming convention (BEM, camelCase, CSS modules...)
+- Replace hardcoded colors/spacing with your CSS variables or design tokens
+- Convert between frameworks (vanilla HTML to React JSX, CSS to Tailwind utilities...)
+- Scope styles to avoid conflicts with your global CSS
+- Add proper imports and follow your component patterns
+
+Example prompt:
+> "Use integrate_post to add the animated-circle-loaders-html-css-10 snippet to my Next.js project that uses Tailwind and CSS variables"
+
+The AI will fetch the snippet, read your project context, and produce adapted code ready to paste.
+
+## Supported snippet types
+
+| Type | Code fields returned |
+|------|---------------------|
+| **classic** | HTML, CSS, JavaScript |
+| **react** | JSX, Styles (CSS), HTML (host) |
+| **tailwind** | HTML (with Tailwind classes), CSS, JavaScript |
 
 ## Setup
 
@@ -117,6 +141,7 @@ Once connected, ask your AI assistant things like:
 - "Find Looba posts tagged with `animation`"
 - "Get the code for the post `animated-circle-loaders-html-css-10`"
 - "List all posts by @Frontend-snippet-Bot"
+- "Integrate the `focus-trapped-navigation-controller` snippet into my React project using CSS modules"
 
 Every response includes **source URL**, **author**, and **license** — so AI assistants always cite properly.
 
