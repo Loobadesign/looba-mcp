@@ -27,7 +27,7 @@ pip install looba-mcp
 ### git
 
 ```bash
-git clone https://github.com/Loobadesign/looba-mcp.git
+git clone https://github.com/Loobadev/looba-mcp.git
 cd looba-mcp
 npm install
 ```
