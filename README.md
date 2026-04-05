@@ -39,7 +39,7 @@ npm install
 | Tool | Description |
 |------|-------------|
 | `list_posts` | Search and browse snippet posts with filters (tag, type, sort) |
-| `get_post` | Get full HTML/CSS/JS code of a post with author attribution |
+| `get_post` | Get full HTML/CSS/JS/JSX/TSX code of a post with author attribution |
 | `search_by_author` | List all posts by a specific author |
 | `get_popular_tags` | Discover trending tags across the platform |
 
