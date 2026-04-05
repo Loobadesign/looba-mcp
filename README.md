@@ -6,15 +6,33 @@ No API key required. No database credentials. The server calls the public Looba 
 
 ## Install
 
-```bash
-npm install -g looba-mcp
-```
-
-Or run directly with npx (no install needed):
+### npx (no install needed)
 
 ```bash
 npx looba-mcp
 ```
+
+### npm
+
+```bash
+npm install -g looba-mcp
+```
+
+### pip
+
+```bash
+pip install looba-mcp
+```
+
+### git
+
+```bash
+git clone https://github.com/Loobadesign/looba-mcp.git
+cd looba-mcp
+npm install
+```
+
+> All methods require [Node.js](https://nodejs.org) 18+ installed on your machine.
 
 ## Tools
 
@@ -64,12 +82,31 @@ Add to `~/.windsurf/mcp.json`:
 }
 ```
 
-### Other MCP clients
+### Using pip or git install
 
-Any MCP-compatible client can use this server via stdio transport:
+If you installed via pip or git clone, use `looba-mcp` or `node` directly:
 
-```bash
-npx looba-mcp
+```json
+{
+  "mcpServers": {
+    "looba": {
+      "command": "looba-mcp"
+    }
+  }
+}
+```
+
+Or with git clone:
+
+```json
+{
+  "mcpServers": {
+    "looba": {
+      "command": "node",
+      "args": ["/path/to/looba-mcp/index.js"]
+    }
+  }
+}
 ```
 
 ## Examples

@@ -1,0 +1,24 @@
+{
+  "name": "looba-mcp",
+  "version": "1.0.0",
+  "private": false,
+  "type": "module",
+  "description": "MCP server for browsing Looba UI snippets — search posts, read code, and discover authors.",
+  "main": "index.js",
+  "bin": {
+    "looba-mcp": "index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "zod": "^4.3.6"
+  },
+  "keywords": ["mcp", "looba", "ui", "snippets", "css", "html", "design"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Loobadesign/looba-mcp.git"
+  }
+}

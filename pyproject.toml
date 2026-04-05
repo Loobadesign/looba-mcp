@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "looba-mcp"
+version = "1.0.0"
+description = "MCP server for browsing Looba UI snippets — search posts, read code, and discover authors."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+keywords = ["mcp", "looba", "ui", "snippets", "css", "html", "design"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://looba.dev"
+Repository = "https://github.com/Loobadesign/looba-mcp"
+
+[project.scripts]
+looba-mcp = "looba_mcp.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["looba_mcp*"]
+
+[tool.setuptools.package-data]
+"looba_mcp" = ["server/**/*"]
