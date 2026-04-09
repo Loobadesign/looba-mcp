@@ -63,6 +63,28 @@ function attributionBlock(post, author) {
   ].join("\n");
 }
 
+function showInteractiveBanner() {
+  const isInteractive = Boolean(process.stdin.isTTY && process.stdout.isTTY);
+  if (!isInteractive) return;
+
+  const lines = [
+    "",
+    "Looba MCP has been installed successfully.",
+    "",
+    "You are all set. Here are the available commands:",
+    "",
+    "Tool                Description",
+    "list_posts          Search and browse snippet posts with filters (tag, type, sort)",
+    "get_post            Get full HTML/CSS/JS code of a post with author attribution",
+    "integrate_post      Fetch a snippet with integration instructions adapted to your project's CSS, framework, and conventions",
+    "search_by_author    List all posts by a specific author",
+    "get_popular_tags    Discover trending tags across the platform",
+    "",
+  ];
+
+  process.stderr.write(lines.join("\n"));
+}
+
 // ---------------------------------------------------------------------------
 // MCP Server
 // ---------------------------------------------------------------------------
@@ -431,6 +453,7 @@ server.tool(
 // ---------------------------------------------------------------------------
 
 async function main() {
+  showInteractiveBanner();
   const transport = new StdioServerTransport();
   await server.connect(transport);
 }
