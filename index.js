@@ -52,6 +52,54 @@ function formatAuthor(row) {
   return `${name} (@${row.username})`;
 }
 
+// ---------------------------------------------------------------------------
+// Dependency detection
+// ---------------------------------------------------------------------------
+
+const DETECTABLE_DEPS = [
+  { name: "Three.js", version: "0.165.0", test: /\bTHREE\b|three\.module|from\s+['"]three['"]/ },
+  { name: "GLTFLoader", version: null, test: /\bGLTFLoader\b/ },
+  { name: "OrbitControls", version: null, test: /\bOrbitControls\b/ },
+  { name: "GLSL", version: null, test: /\bgl_Position\b|\bgl_FragColor\b|\bgl_FragData\b|\buniform\s+(vec|mat|float|int|sampler)|#version\s+\d|\bvarying\s+|attribute\s+(vec|mat|float)/ },
+  { name: "GSAP", version: "3.12.5", test: /\bgsap\b|\bGSAP\b|\bScrollTrigger\b|\bgsap\.to\b|\bgsap\.from\b|\bgsap\.timeline\b/i },
+  { name: "ScrollTrigger", version: null, test: /\bScrollTrigger\b/ },
+  { name: "React", version: "18", test: /\bReact\b|\buseState\b|\buseEffect\b|\bReactDOM\b|from\s+['"]react['"]/ },
+  { name: "Framer Motion", version: "12.29.0", test: /\bframer-motion\b|\bmotion\.\w+|\buseAnimation\b|\bAnimatePresence\b/ },
+  { name: "Tailwind CSS", version: null, test: /tailwindcss\.com|type\s*=\s*['"]text\/tailwindcss['"]/ },
+  { name: "jQuery", version: "3.7.1", test: /\bjQuery\b|\$\(\s*['"]|jquery\..*\.min\.js/ },
+  { name: "Matter.js", version: "0.20.0", test: /\bMatter\b|\bMatter\.Engine\b|\bMatter\.Bodies\b/ },
+  { name: "Canvas Confetti", version: "1.9.3", test: /\bconfetti\s*\(/ },
+  { name: "Lucide React", version: "0.563.0", test: /\blucide-react\b|\blucide\b/ },
+  { name: "Babel", version: null, test: /\bBabel\b|@babel\/standalone/ },
+];
+
+function detectDeps(post) {
+  const sources = [
+    post.html || "",
+    post.css || "",
+    post.js || "",
+    post.snippet_jsx || "",
+    post.styles_css || "",
+  ].join("\n");
+  if (!sources.trim()) return [];
+  const found = [];
+  for (const dep of DETECTABLE_DEPS) {
+    if (dep.test.test(sources)) {
+      found.push(dep);
+    }
+  }
+  return found;
+}
+
+function formatDeps(deps) {
+  if (!deps.length) return "Dependencies: None";
+  return "Dependencies: " + deps.map(d => d.version ? `${d.name} (${d.version})` : d.name).join(", ");
+}
+
+// ---------------------------------------------------------------------------
+// Helpers (continued)
+// ---------------------------------------------------------------------------
+
 function attributionBlock(post, author) {
   return [
     "---",
@@ -198,10 +246,13 @@ server.tool(
 
     sections.push(`# ${post.title}`);
     if (post.description) sections.push("", post.description);
+    const deps = detectDeps(post);
+
     sections.push(
       "",
       `Type: ${snippetType}`,
       `Tags: ${(post.tags || []).join(", ") || "none"}`,
+      formatDeps(deps),
       `Views: ${Number(post.view_count || 0)} | Downloads: ${Number(post.download_count || 0)}`,
       `Published: ${formatDate(post.created_at)}`,
       `Updated: ${formatDate(post.updated_at)}`
@@ -272,9 +323,12 @@ server.tool(
     sections.push(`# ${post.title}`, "");
     if (post.description) sections.push(post.description, "");
 
+    const deps = detectDeps(post);
+
     sections.push(
       `Type: ${snippetType}`,
       `Tags: ${(post.tags || []).join(", ") || "none"}`,
+      formatDeps(deps),
       `License: ${post.license_name || "MIT License"}`,
       ""
     );
@@ -341,9 +395,11 @@ server.tool(
         "(React JSX, Vue SFC, Svelte, Web Components, etc.). Use the project's patterns " +
         "for state management, event handling, and props.",
       "",
-      "5. **Imports and dependencies**: Add necessary imports. If the snippet uses " +
-        "animations or libraries not in the project, suggest alternatives or provide " +
-        "the minimal CSS keyframes needed.",
+      "5. **Imports and dependencies**: " + (deps.length
+        ? "This snippet uses: " + deps.map(d => d.version ? `${d.name} (${d.version})` : d.name).join(", ") + ". "
+          + "Install any missing packages and add the correct imports. "
+          + "If a dependency is not available in the project, suggest an alternative or provide inline fallbacks."
+        : "No external dependencies detected. Add imports only if the target framework requires them."),
       "",
       "6. **Responsiveness**: Preserve the snippet's responsive behavior but adapt " +
         "breakpoints to match the project's breakpoint system.",
