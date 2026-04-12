@@ -1,6 +1,6 @@
 # Looba MCP Server
 
-An [MCP](https://modelcontextprotocol.io) server that gives AI assistants read-only access to [Looba](https://looba.dev) — a community platform for UI snippets and design inspiration.
+An [MCP](https://modelcontextprotocol.io) server that gives AI assistants read-only access to [Looba](https://looba.dev) a community platform for UI snippets and design inspiration.
 
 No API key required. No database credentials. The server calls the public Looba API over HTTPS.
 
@@ -143,7 +143,7 @@ Once connected, ask your AI assistant things like:
 - "List all posts by @Frontend-snippet-Bot"
 - "Integrate the `focus-trapped-navigation-controller` snippet into my React project using CSS modules"
 
-Every response includes **source URL**, **author**, and **license** — so AI assistants always cite properly.
+Every response includes **source URL**, **author**, and **license** so AI assistants always cite properly.
 
 ## License
 
