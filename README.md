@@ -79,6 +79,16 @@ The AI will fetch the snippet, read your project context, and produce adapted co
 
 ## Setup
 
+### Remote MCP URL
+
+If your client supports URL-based MCP servers, use:
+
+- URL: `https://mcp.looba.dev`
+- Bearer token: not required
+- Custom headers: not required
+
+Use the root endpoint (`https://mcp.looba.dev`) unless your proxy explicitly maps another path.
+
 ### Claude Code
 
 Add to your project `.mcp.json` or `~/.claude/settings.json`:
